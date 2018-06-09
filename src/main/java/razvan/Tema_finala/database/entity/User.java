@@ -2,6 +2,7 @@ package razvan.Tema_finala.database.entity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -28,6 +29,44 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "blocked")
+    private boolean blocked;
+
+    @Column(name = "last_try")
+    private Date lastTry;
+
+    @Column(name = "tries")
+    private Integer loginTries ;
+
+    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY)
+    private List<Post> posts;
+
+
+    public Date getLastTry() {
+        return lastTry;
+    }
+
+    public void setLastTry(Date lastTry) {
+        this.lastTry = lastTry;
+    }
+
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public Integer getLoginTries() {
+        return loginTries;
+    }
+
+    public void setLoginTries(Integer loginTries) {
+        this.loginTries = loginTries;
+    }
+
     public User() {
     }
 
@@ -38,6 +77,9 @@ public class User {
         this.email = email;
         this.birthDate = birthDate;
         this.password = password;
+
+        this.blocked = false;
+        this.loginTries = 0;
     }
 
     public Integer getId() {

@@ -13,6 +13,7 @@ import razvan.Tema_finala.model.exception.NotFoundException;
 import razvan.Tema_finala.service.scopes.SessionScopedService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -113,6 +114,7 @@ public class UserService {
             user.setBirthDate(provisoryUser.getBirthDate());
             user.setEmail(provisoryUser.getEmail());
             user.setPassword(provisoryUser.getPassword());
+            user.setLoginTries(0);
             userJpaRepository.save(user);
             provisoryUserJpaRepository.delete(provisoryUser);
         }
@@ -138,7 +140,7 @@ public class UserService {
     }
 
 
-    // 2.A
+    // 2.A Functionalitatea de SingIn
 
     public UserModel getLoggedUserDetails(){
         User loggedPerson = userJpaRepository.findByEmail(sessionScopedService.getUserModel().getEmail());
@@ -149,7 +151,25 @@ public class UserService {
         User user = userJpaRepository.findByEmail(email);
         if(user == null){
             throw new AuthorizationException("Invalid credendtials");
+        } else if (!user.getPassword().equals(password)) {
+            user.setLoginTries(user.getLoginTries() + 1);
+            if (user.getLoginTries() == 3){
+                user.setBlocked(true);
+                user.setLastTry(new Date());
+
+            }
+            userJpaRepository.save(user);
+            throw new AuthorizationException("Invalid credendtials");
+
         }
+        if (user.isBlocked()) {
+            if (new Date().getTime() - user.getLastTry().getTime() < 30000) {
+                throw new AuthorizationException("User is blocked for the next 60 minutes");
+            }
+        }
+
+        user.setLoginTries(0);
+        this.userJpaRepository.save(user);
         sessionScopedService.setUserModel(getUserModelFromPerson(user));
     }
 
@@ -167,6 +187,7 @@ public class UserService {
 
 
 
+    // 3A Functionalitate postari
 
 
 }

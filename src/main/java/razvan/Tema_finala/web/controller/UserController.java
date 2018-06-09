@@ -4,7 +4,11 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import razvan.Tema_finala.model.EmailConfirmationModel;
+import razvan.Tema_finala.model.LoginModel;
+import razvan.Tema_finala.model.PostModel;
 import razvan.Tema_finala.model.UserModel;
+import razvan.Tema_finala.model.exception.AuthorizationException;
+import razvan.Tema_finala.service.PostService;
 import razvan.Tema_finala.service.UserService;
 
 import java.util.List;
@@ -16,6 +20,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PostService postService;
 
     //GetAllUsers
     @GetMapping
@@ -46,8 +53,17 @@ public class UserController {
         userService.checkValidation(email);
     }
 
-//    @PutMapping("/Login")
-//    public void login
+    @PutMapping("/login")
+    public void login (@RequestBody LoginModel loginModel) throws AuthorizationException {
+        userService.login(loginModel.getEmail(), loginModel.getPassword());
+    }
+
+    @PutMapping("/post")
+    public void post(@RequestBody PostModel postMessage) {
+        this.postService.addPost(postMessage);
+
+    }
+
 
 
 }

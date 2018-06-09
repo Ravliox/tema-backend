@@ -11,6 +11,34 @@ public class UserModel {
     private String email;
     private Date birthDate;
     private String password;
+    private boolean blocked;
+
+    public Date getLastTry() {
+        return lastTry;
+    }
+
+    public void setLastTry(Date lastTry) {
+        this.lastTry = lastTry;
+    }
+
+    private Integer loginTries;
+    private Date lastTry;
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public Integer getLoginTries() {
+        return loginTries;
+    }
+
+    public void setLoginTries(Integer loginTries) {
+        this.loginTries = loginTries;
+    }
 
     public UserModel() {
     }
@@ -22,6 +50,9 @@ public class UserModel {
         this.email = email;
         this.birthDate = birthDate;
         this.password = password;
+
+        this.blocked = false;
+        this.loginTries = 0;
     }
 
     public Integer getId() {
